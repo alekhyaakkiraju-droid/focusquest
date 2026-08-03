@@ -30,6 +30,9 @@ resource "google_project_service" "required_apis" {
     "run.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "cloudtrace.googleapis.com",
   ])
 
   project = google_project.focusquest.project_id
@@ -152,6 +155,15 @@ module "vpc_service_controls" {
     "pubsub.googleapis.com",
     "cloudkms.googleapis.com",
   ]
+
+  depends_on = [google_project_service.required_apis]
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  project_id  = google_project.focusquest.project_id
+  name_prefix = local.name_prefix
 
   depends_on = [google_project_service.required_apis]
 }
