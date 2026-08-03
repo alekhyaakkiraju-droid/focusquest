@@ -1,0 +1,49 @@
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/flutter-app/**"
+      - "ci/**"
+      - ".github/workflows/flutter-ci.yml"
+  pull_request:
+    paths:
+      - "apps/flutter-app/**"
+      - "ci/**"
+      - ".github/workflows/flutter-ci.yml"
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+          cache-key: flutter-${{ hashFiles('apps/flutter-app/pubspec.yaml') }}
+
+      - name: Install dependencies
+        working-directory: apps/flutter-app
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: apps/flutter-app
+        run: flutter analyze
+
+      - name: Test
+        working-directory: apps/flutter-app
+        run: flutter test
+
+      - name: Build Android APK
+        working-directory: apps/flutter-app
+        run: flutter build apk --release
+
+      - name: Build Android App Bundle
+        working-directory: apps/flutter-app
+        run: flutter build appbundle --release

@@ -1,0 +1,71 @@
+substitutions:
+  _REGION: us-central1
+  _ARTIFACT_BUCKET: focusquest-mobile-artifacts
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: gcr.io/cloud-builders/git
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        bash ci/check-npm-packages-in-commit.sh
+        bash ci/check-sensitive-files.sh
+
+  - name: ghcr.io/cirruslabs/flutter:stable
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        cd apps/flutter-app
+        flutter pub get
+        flutter analyze
+        flutter test
+
+  - name: ghcr.io/cirruslabs/flutter:stable
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        cd apps/flutter-app
+        flutter build apk --release
+        flutter build appbundle --release
+
+  - name: ghcr.io/cirruslabs/flutter:stable
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        cd apps/flutter-app
+        if [ -n "${IOS_EXPORT_OPTIONS:-}" ]; then
+          flutter build ipa --release --export-options-plist="${IOS_EXPORT_OPTIONS}"
+        else
+          echo "Skipping IPA build: set IOS_EXPORT_OPTIONS substitution for signed iOS artifacts"
+        fi
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        gsutil -m cp apps/flutter-app/build/app/outputs/flutter-apk/app-release.apk \
+          gs://${_ARTIFACT_BUCKET}/staging/${SHORT_SHA}/focusquest.apk
+        gsutil -m cp apps/flutter-app/build/app/outputs/bundle/release/app-release.aab \
+          gs://${_ARTIFACT_BUCKET}/staging/${SHORT_SHA}/focusquest.aab
+        if [ -f apps/flutter-app/build/ios/ipa/*.ipa ]; then
+          gsutil -m cp apps/flutter-app/build/ios/ipa/*.ipa \
+            gs://${_ARTIFACT_BUCKET}/staging/${SHORT_SHA}/
+        fi
+
+artifacts:
+  objects:
+    location: gs://${_ARTIFACT_BUCKET}/staging/${SHORT_SHA}/
+    paths:
+      - apps/flutter-app/build/app/outputs/flutter-apk/app-release.apk
+      - apps/flutter-app/build/app/outputs/bundle/release/app-release.aab
