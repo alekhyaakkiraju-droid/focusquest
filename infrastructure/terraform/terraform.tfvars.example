@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars and fill in real values before apply.
+# Do not commit terraform.tfvars — it may contain sensitive org identifiers.
+
+project_id       = "focusquest-staging-001"
+billing_account  = "000000-000000-000000"
+org_id           = "123456789012"
+environment      = "staging"
+primary_region   = "us-central1"
