@@ -1,6 +1,35 @@
-.forge-commit-ready
-.forge/project-id
-.forge/hook-version
-.cursor/hooks.json
-.cursor/hooks/
-.cursor/rules/forge-workflow.mdc
+# Dependencies
+node_modules/
+apps/parent-dashboard/dist/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# Flutter / Dart
+apps/flutter-app/.dart_tool/
+apps/flutter-app/build/
+apps/flutter-app/.flutter-plugins
+apps/flutter-app/.flutter-plugins-dependencies
+
+# Go
+**/bin/
+**/*.exe
+
+# Terraform local state
+**/.terraform/
+*.tfstate
+*.tfstate.*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# NPM package archives (org policy)
+*.tgz
