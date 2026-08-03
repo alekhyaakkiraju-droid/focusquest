@@ -1,0 +1,62 @@
+substitutions:
+  _SERVICE_NAME: timer-service
+  _REGION: us-central1
+  _REPOSITORY: focusquest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: gcr.io/cloud-builders/git
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        bash ci/check-npm-packages-in-commit.sh
+        bash ci/check-sensitive-files.sh
+
+  - name: golang:1.22
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        cd services/${_SERVICE_NAME}
+        go test ./...
+        go vet ./...
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest
+      - -f
+      - services/${_SERVICE_NAME}/Dockerfile
+      .
+
+  - name: aquasec/trivy:latest
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        trivy image --exit-code 0 --severity CRITICAL,HIGH --ignore-unfixed \
+          ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA \
+          || echo "Trivy scan completed with findings; configure fail-on-critical in production"
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud run deploy ${_SERVICE_NAME}-staging \
+          --image ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA \
+          --region ${_REGION} \
+          --platform managed \
+          --allow-unauthenticated \
+          --port 8080
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest

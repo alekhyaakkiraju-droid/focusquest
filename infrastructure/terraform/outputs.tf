@@ -47,3 +47,18 @@ output "service_account_emails" {
   description = "Provisioned service account emails."
   value       = module.iam.service_account_emails
 }
+
+output "monitoring_dashboard_name" {
+  description = "Cloud Monitoring dashboard display name."
+  value       = module.monitoring.dashboard_name
+}
+
+output "monitoring_alert_policies" {
+  description = "Configured monitoring alert policies."
+  value       = module.monitoring.alert_policy_names
+}
+
+output "log_retention_bucket" {
+  description = "Cloud Logging bucket with >= 1 year retention."
+  value       = module.monitoring.log_bucket_id
+}

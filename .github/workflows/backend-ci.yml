@@ -1,0 +1,63 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "services/**"
+      - "packages/**"
+      - "ci/**"
+      - "infrastructure/terraform/modules/monitoring/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "services/**"
+      - "packages/**"
+      - "ci/**"
+      - "infrastructure/terraform/modules/monitoring/**"
+      - ".github/workflows/backend-ci.yml"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - auth-service
+          - timer-service
+          - quest-service
+          - notification-service
+          - compliance-service
+          - analytics-service
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: services/${{ matrix.service }}/go.sum
+
+      - name: Run unit tests
+        working-directory: services/${{ matrix.service }}
+        run: |
+          go test ./...
+          go vet ./...
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t focusquest/${{ matrix.service }}:${{ github.sha }} \
+            -f services/${{ matrix.service }}/Dockerfile \
+            .
+
+      - name: Trivy container scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: focusquest/${{ matrix.service }}:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          ignore-unfixed: true

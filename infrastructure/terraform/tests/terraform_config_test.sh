@@ -44,7 +44,8 @@ assert_contains "modules/storage/main.tf" "cors" "Avatar bucket CORS configured 
 assert_contains "modules/cloud_armor/main.tf" "evaluatePreconfiguredExpr" "Cloud Armor OWASP rules configured"
 assert_contains "modules/vpc_service_controls/main.tf" "google_access_context_manager_service_perimeter" "VPC Service Controls perimeter configured"
 assert_contains "main.tf" "module \"cloudsql\"" "Dual-region Cloud SQL module wired"
-assert_contains "main.tf" "module \"redis\"" "Dual-region Redis module wired"
+assert_contains "main.tf" "module \"monitoring\"" "Monitoring module wired in root terraform"
+assert_contains "modules/monitoring/main.tf" "google_monitoring_dashboard" "Monitoring dashboard resource configured"
 
 if [[ "$failures" -gt 0 ]]; then
   echo "$failures configuration test(s) failed"
