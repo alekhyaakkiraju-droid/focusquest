@@ -1,0 +1,3 @@
+# FocusQuest
+
+Repository initialized.
