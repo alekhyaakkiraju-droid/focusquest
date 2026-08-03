@@ -34,7 +34,7 @@ steps:
       - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest
       - -f
       - services/${_SERVICE_NAME}/Dockerfile
-      - services/${_SERVICE_NAME}
+      .
 
   - name: aquasec/trivy:latest
     entrypoint: bash

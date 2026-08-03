@@ -8,6 +8,7 @@ echo "=== CI script tests ==="
 bash ci/tests/check_npm_packages_test.sh
 bash ci/tests/check_sensitive_files_test.sh
 bash ci/tests/cloudbuild_config_test.sh
+bash ci/tests/observability_config_test.sh
 
 echo "=== Repository policy checks ==="
 bash ci/check-npm-packages-in-commit.sh

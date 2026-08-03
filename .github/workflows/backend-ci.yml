@@ -6,12 +6,16 @@ on:
       - main
     paths:
       - "services/**"
+      - "packages/**"
       - "ci/**"
+      - "infrastructure/terraform/modules/monitoring/**"
       - ".github/workflows/backend-ci.yml"
   pull_request:
     paths:
       - "services/**"
+      - "packages/**"
       - "ci/**"
+      - "infrastructure/terraform/modules/monitoring/**"
       - ".github/workflows/backend-ci.yml"
 
 jobs:
@@ -48,7 +52,7 @@ jobs:
           docker build \
             -t focusquest/${{ matrix.service }}:${{ github.sha }} \
             -f services/${{ matrix.service }}/Dockerfile \
-            services/${{ matrix.service }}
+            .
 
       - name: Trivy container scan
         uses: aquasecurity/trivy-action@0.28.0

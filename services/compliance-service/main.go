@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	sharedmw "github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware"
 )
 
 const serviceName = "compliance-service"
@@ -18,8 +20,9 @@ func main() {
 		port = "8080"
 	}
 
+	handler := sharedmw.Chain(serviceName, mux)
 	log.Printf("%s listening on :%s", serviceName, port)
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	if err := http.ListenAndServe(":"+port, handler); err != nil {
 		log.Fatalf("%s server failed: %v", serviceName, err)
 	}
 }

@@ -5,10 +5,15 @@ WORKDIR /src
 
 RUN apk add --no-cache ca-certificates git
 
-COPY go.mod ./
+COPY packages/shared/middleware/go.mod packages/shared/middleware/go.sum ./packages/shared/middleware/
+COPY services/quest-service/go.mod ./services/quest-service/
+
+WORKDIR /src/services/quest-service
 RUN go mod download
 
-COPY . .
+COPY packages/shared/middleware /src/packages/shared/middleware
+COPY services/quest-service /src/services/quest-service
+
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./...
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /server .
 
