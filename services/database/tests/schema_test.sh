@@ -14,6 +14,7 @@ DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:$POSTGRES_P
 REQUIRED_TABLES=(
   users
   child_profiles
+  tenant_encryption_keys
   refresh_tokens
   oauth_links
   focus_sessions
@@ -133,8 +134,8 @@ if ! run_migrate up; then
 fi
 
 version="$(migrate_version)"
-if [[ "$version" != "10" ]]; then
-  echo "FAIL: expected migration version 10, got '$version'"
+if [[ "$version" != "11" ]]; then
+  echo "FAIL: expected migration version 11, got '$version'"
   exit 1
 fi
 

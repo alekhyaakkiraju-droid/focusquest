@@ -31,6 +31,7 @@ assert_migration_not_contains() {
 required_tables=(
   users
   child_profiles
+  tenant_encryption_keys
   refresh_tokens
   oauth_links
   focus_sessions
