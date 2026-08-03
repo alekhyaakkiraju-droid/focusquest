@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS streaks;
+DROP TABLE IF EXISTS xp_ledger;
+DROP TABLE IF EXISTS quest_progress;
+DROP TABLE IF EXISTS quests;
+DROP TABLE IF EXISTS badges;
+DROP TYPE IF EXISTS ib_learner_attribute;
