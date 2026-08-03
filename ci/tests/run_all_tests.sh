@@ -9,6 +9,14 @@ bash ci/tests/check_npm_packages_test.sh
 bash ci/tests/check_sensitive_files_test.sh
 bash ci/tests/cloudbuild_config_test.sh
 bash ci/tests/observability_config_test.sh
+bash ci/tests/schema_config_test.sh
+
+echo "=== Database schema tests ==="
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+  bash services/database/tests/schema_test.sh
+else
+  echo "SKIP: Docker unavailable; schema integration test skipped"
+fi
 
 echo "=== Repository policy checks ==="
 bash ci/check-npm-packages-in-commit.sh
