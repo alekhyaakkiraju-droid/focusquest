@@ -6,12 +6,14 @@ WORKDIR /src
 RUN apk add --no-cache ca-certificates git
 
 COPY packages/shared/middleware/go.mod packages/shared/middleware/go.sum ./packages/shared/middleware/
+COPY packages/shared/errors/go.mod ./packages/shared/errors/
 COPY services/analytics-service/go.mod ./services/analytics-service/
 
 WORKDIR /src/services/analytics-service
 RUN go mod download
 
 COPY packages/shared/middleware /src/packages/shared/middleware
+COPY packages/shared/errors /src/packages/shared/errors
 COPY services/analytics-service /src/services/analytics-service
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./...

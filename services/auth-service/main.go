@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	sharederrors "github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors"
 	sharedmw "github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware"
 )
 
@@ -20,7 +21,7 @@ func main() {
 		port = "8080"
 	}
 
-	handler := sharedmw.Chain(serviceName, mux)
+	handler := sharederrors.Chain(serviceName, sharedmw.Chain(serviceName, mux))
 	log.Printf("%s listening on :%s", serviceName, port)
 	if err := http.ListenAndServe(":"+port, handler); err != nil {
 		log.Fatalf("%s server failed: %v", serviceName, err)
@@ -29,7 +30,10 @@ func main() {
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		sharederrors.WriteError(w, r, serviceName, sharederrors.ValidationError(
+			"Only GET is supported for this endpoint",
+			sharederrors.Detail{Field: "method", Reason: r.Method + " is not allowed"},
+		))
 		return
 	}
 
