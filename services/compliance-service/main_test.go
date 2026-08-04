@@ -36,7 +36,15 @@ func TestHealthHandlerMethodNotAllowed(t *testing.T) {
 
 	healthHandler(rec, req)
 
-	if rec.Code != http.StatusMethodNotAllowed {
-		t.Fatalf("expected status %d, got %d", http.StatusMethodNotAllowed, rec.Code)
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("expected status %d, got %d", http.StatusBadRequest, rec.Code)
+	}
+
+	var body map[string]any
+	if err := json.NewDecoder(rec.Body).Decode(&body); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if body["error_code"] != "VALIDATION_ERROR" {
+		t.Fatalf("expected standardized error_code, got %+v", body)
 	}
 }

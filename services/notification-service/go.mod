@@ -2,6 +2,8 @@ module github.com/focusquest/notification-service
 
 go 1.22
 
+require github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors v0.0.0
+
 require github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware v0.0.0
 
 require (
@@ -18,3 +20,5 @@ require (
 )
 
 replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware => ../../packages/shared/middleware
+
+replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors => ../../packages/shared/errors

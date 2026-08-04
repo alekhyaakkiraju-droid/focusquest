@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/alekhyaakkiraju-droid/focusquest/packages/shared/encryption v0.0.0
+	github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors v0.0.0
 	github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware v0.0.0
 	github.com/google/uuid v1.6.0
 )
@@ -48,3 +49,5 @@ require (
 replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware => ../../packages/shared/middleware
 
 replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/encryption => ../../packages/shared/encryption
+
+replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors => ../../packages/shared/errors

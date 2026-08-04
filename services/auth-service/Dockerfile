@@ -7,6 +7,7 @@ RUN apk add --no-cache ca-certificates git
 
 COPY packages/shared/middleware/go.mod packages/shared/middleware/go.sum ./packages/shared/middleware/
 COPY packages/shared/encryption/go.mod ./packages/shared/encryption/
+COPY packages/shared/errors/go.mod ./packages/shared/errors/
 COPY services/auth-service/go.mod ./services/auth-service/
 
 WORKDIR /src/services/auth-service
@@ -14,6 +15,7 @@ RUN go mod download
 
 COPY packages/shared/middleware /src/packages/shared/middleware
 COPY packages/shared/encryption /src/packages/shared/encryption
+COPY packages/shared/errors /src/packages/shared/errors
 COPY services/auth-service /src/services/auth-service
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./...

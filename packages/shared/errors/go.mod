@@ -1,8 +1,6 @@
-module github.com/focusquest/analytics-service
+module github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors
 
 go 1.22
-
-require github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors v0.0.0
 
 require github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware v0.0.0
 
@@ -19,6 +17,4 @@ require (
 	golang.org/x/sys v0.24.0 // indirect
 )
 
-replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware => ../../packages/shared/middleware
-
-replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/errors => ../../packages/shared/errors
+replace github.com/alekhyaakkiraju-droid/focusquest/packages/shared/middleware => ../middleware

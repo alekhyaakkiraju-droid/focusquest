@@ -11,6 +11,7 @@ bash ci/tests/cloudbuild_config_test.sh
 bash ci/tests/observability_config_test.sh
 bash ci/tests/schema_config_test.sh
 bash ci/tests/encryption_config_test.sh
+bash ci/tests/errors_config_test.sh
 
 echo "=== Database schema tests ==="
 if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
